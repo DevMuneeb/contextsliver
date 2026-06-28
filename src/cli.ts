@@ -10,7 +10,7 @@
 // Logging uses console.error (stderr) directly for user-facing CLI messages, and the log()
 // helper for server-internal diagnostics. Neither touches stdout except the MCP transport.
 import { Command } from 'commander';
-import { join, resolve } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import {
   mkdirSync,
   existsSync,
@@ -70,8 +70,10 @@ program
     // 3. .mcp.json
     writeMcpConfig(root);
 
-    // 4. CLAUDE.md
+    // 4. Agent instruction files. We create/append for each supported agent so its rules nudge
+    //    the agent toward the cs_* tools. writeAgentInstruction is idempotent.
     writeClaudeMd(root);
+    writeAgentInstruction(root, '.github/copilot-instructions.md', 'copilot-instructions.md');
 
     // 5. Initial index
     if (opts.index) {
@@ -163,14 +165,47 @@ function writeMcpConfig(root: string): void {
 }
 
 function writeClaudeMd(root: string): void {
-  const claudeMdPath = join(root, 'CLAUDE.md');
-  if (existsSync(claudeMdPath)) {
-    log('Skipped CLAUDE.md (already exists)');
+  writeAgentInstruction(root, 'CLAUDE.md', 'CLAUDE.md');
+}
+
+/**
+ * Write (or append to) a code-agent instruction file.
+ *
+ * Behavior:
+ *   - If the file does NOT exist → create it from the template.
+ *   - If the file exists but does NOT contain a ContextSliver marker → APPEND the template
+ *     section (so we don't clobber the user's existing instructions, but still add our rules).
+ *   - If the file exists and already contains our marker → skip (idempotent on re-run).
+ *
+ * The marker lets us detect a previously-injected section so re-running `init` is safe.
+ */
+function writeAgentInstruction(
+  root: string,
+  relativePath: string,
+  templateName: string,
+): void {
+  const absPath = join(root, relativePath);
+  const SECTION_MARKER = '<!-- contextsliver:start -->';
+  const template = readTemplate(templateName);
+
+  if (!existsSync(absPath)) {
+    // Ensure parent dirs exist (e.g. .github/copilot-instructions.md needs .github/).
+    const parent = absPath.slice(0, absPath.lastIndexOf(sep));
+    if (parent && !existsSync(parent)) mkdirSync(parent, { recursive: true });
+    writeFileSync(absPath, template);
+    log(`Created ${relativePath}`);
     return;
   }
-  const template = readTemplate('CLAUDE.md');
-  writeFileSync(claudeMdPath, template);
-  log('Created CLAUDE.md');
+
+  const existing = readFileSync(absPath, 'utf-8');
+  if (existing.includes(SECTION_MARKER)) {
+    log(`Skipped ${relativePath} (ContextSliver section already present)`);
+    return;
+  }
+  // Append our section, clearly delimited so future init runs can detect and update it.
+  const appended = `${existing.trimEnd()}\n\n${SECTION_MARKER}\n${template}\n<!-- contextsliver:end -->\n`;
+  writeFileSync(absPath, appended);
+  log(`Updated ${relativePath} (appended ContextSliver section)`);
 }
 
 /** Read a file from templates/, resolving whether we're running from src/ or dist/. */

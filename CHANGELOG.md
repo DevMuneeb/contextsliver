@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-06-29
+
+### Added
+- **GitHub Copilot support.** `init` now also writes `.github/copilot-instructions.md`
+  nudging Copilot toward the `cs_*` tools, in addition to `CLAUDE.md` (Claude Code).
+
+### Changed
+- **`init` now appends to existing instruction files instead of skipping them.** Previously,
+  if `CLAUDE.md` already existed, `init` did nothing — so existing projects got no ContextSliver
+  rules. Now it appends a clearly-delimited `<!-- contextsliver:start -->` section, preserving
+  the user's existing content. Re-running `init` is idempotent (detected via the marker).
+
 ## [0.1.4] - 2026-06-29
 
 ### Fixed
