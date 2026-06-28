@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "contextsliver": {
+      "command": "npx",
+      "args": ["contextsliver", "start"],
+      "env": {}
+    }
+  }
+}

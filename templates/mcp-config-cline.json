@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "contextsliver": {
+      "command": "npx",
+      "args": ["contextsliver", "start"],
+      "disabled": false,
+      "autoApprove": [
+        "cs_blast_radius",
+        "cs_get_context",
+        "cs_search_symbols",
+        "cs_index_status"
+      ]
+    }
+  }
+}
