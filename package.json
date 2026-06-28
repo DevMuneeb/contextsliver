@@ -12,14 +12,14 @@
     "token-reduction",
     "tree-sitter"
   ],
-  "homepage": "https://github.com/muneeburrehman/contextsliver",
-  "bugs": "https://github.com/muneeburrehman/contextsliver/issues",
+  "homepage": "https://github.com/DevMuneeb/contextsliver",
+  "bugs": "https://github.com/DevMuneeb/contextsliver/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muneeburrehman/contextsliver.git"
+    "url": "https://github.com/DevMuneeb/contextsliver.git"
   },
   "license": "MIT",
-  "author": "",
+  "author": "DevMuneeb",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

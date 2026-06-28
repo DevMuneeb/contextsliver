@@ -53,6 +53,23 @@ export async function startMCPServer(opts: ServerOptions): Promise<void> {
     logError(err);
   }
 
+  // Self-healing: if the index is empty (e.g. server started without prior `init`), index the
+  // project now so the tools have something to query. This keeps `start` usable standalone.
+  try {
+    const stats = store.stats();
+    if (stats.files === 0) {
+      log('Index is empty; running initial index on startup');
+      const { indexRepository } = await import('../parser/index.js');
+      const result = indexRepository(store, projectRoot, { force: true });
+      log(
+        `Startup index: ${result.filesIndexed} files, ${result.symbols} symbols, ${result.edges} edges`,
+      );
+    }
+  } catch (err) {
+    // A failed startup index shouldn't kill the server — tools can still trigger cs_index_repo.
+    logError(err);
+  }
+
   // 2. Build the tool context (shared by all tool handlers).
   const ctx: ToolContext = { store, sessionManager, projectRoot };
 

@@ -170,7 +170,7 @@ describe('pruner', () => {
   });
 
   it('symbolsToMark includes focal + fresh neighbors', () => {
-    const pruned: any = {
+    const pruned = {
       symbol: sym(1, 'Focal'),
       callers: [sym(2, 'Caller')],
       dependencies: [sym(3, 'Dep')],

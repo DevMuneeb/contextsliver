@@ -76,7 +76,7 @@ catch regressions when grammar versions change.
 ## Development setup
 
 ```bash
-git clone https://github.com/muneeburrehman/contextsliver.git
+git clone https://github.com/DevMuneeb/contextsliver.git
 cd contextsliver
 npm install      # installs native deps (better-sqlite3, tree-sitter) — may take a minute
 npm test
