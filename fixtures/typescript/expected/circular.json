@@ -1,0 +1,26 @@
+{
+  "symbols": [
+    {
+      "name": "A",
+      "kind": "class",
+      "line_start": 8,
+      "line_end": 13,
+      "signature": "class A"
+    },
+    {
+      "name": "constructor",
+      "kind": "function",
+      "line_start": 10,
+      "line_end": 12,
+      "signature": "constructor()"
+    }
+  ],
+  "imports": [
+    {
+      "specifier": "./B",
+      "names": [
+        "B"
+      ]
+    }
+  ]
+}

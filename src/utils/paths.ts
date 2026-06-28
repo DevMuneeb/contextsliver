@@ -3,6 +3,7 @@
 // All stored file paths are relative to the project root, posix-style (forward slashes),
 // so the index is portable across OSes and the graph query results are stable.
 import { resolve, relative, normalize, sep, posix, isAbsolute } from 'node:path';
+import { existsSync } from 'node:fs';
 
 /**
  * Convert an absolute or project-relative path to a canonical, posix-style, project-relative path.
@@ -54,15 +55,7 @@ export function resolveRelativeImport(
   for (const candidate of candidates) {
     if (candidate.startsWith('..')) continue; // escaped project root
     const abs = resolve(projectRoot, candidate);
-    try {
-      // Defer to fs for existence check in caller tests; here use a lightweight stat via require.
-      // We return the candidate and let the caller confirm — but to be useful we DO stat.
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const fs = require('node:fs') as typeof import('node:fs');
-      if (fs.existsSync(abs)) return candidate;
-    } catch {
-      // ignore
-    }
+    if (existsSync(abs)) return candidate;
   }
   return null;
 }

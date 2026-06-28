@@ -1,0 +1,81 @@
+{
+  "symbols": [
+    {
+      "name": "AuthConfig",
+      "kind": "interface",
+      "line_start": 6,
+      "line_end": 8,
+      "signature": "interface AuthConfig"
+    },
+    {
+      "name": "AuthService",
+      "kind": "class",
+      "line_start": 10,
+      "line_end": 20,
+      "signature": "class AuthService"
+    },
+    {
+      "name": "constructor",
+      "kind": "function",
+      "line_start": 11,
+      "line_end": 11,
+      "signature": "constructor(private tokens: TokenService) {}"
+    },
+    {
+      "name": "login",
+      "kind": "function",
+      "line_start": 13,
+      "line_end": 15,
+      "signature": "login(user: User): string"
+    },
+    {
+      "name": "logout",
+      "kind": "function",
+      "line_start": 17,
+      "line_end": 19,
+      "signature": "logout(token: string): void"
+    },
+    {
+      "name": "createAuthService",
+      "kind": "function",
+      "line_start": 22,
+      "line_end": 24,
+      "signature": "function createAuthService(t: TokenService): AuthService"
+    },
+    {
+      "name": "DEFAULT_TIMEOUT",
+      "kind": "variable",
+      "line_start": 26,
+      "line_end": 26,
+      "signature": "const DEFAULT_TIMEOUT = 5000"
+    },
+    {
+      "name": "handler",
+      "kind": "function",
+      "line_start": 27,
+      "line_end": 27,
+      "signature": "const handler = (req: unknown) => null"
+    },
+    {
+      "name": "Token",
+      "kind": "type",
+      "line_start": 29,
+      "line_end": 29,
+      "signature": "type Token = string"
+    }
+  ],
+  "imports": [
+    {
+      "specifier": "../users/User",
+      "names": [
+        "User"
+      ]
+    },
+    {
+      "specifier": "./TokenService",
+      "names": [
+        "TokenService"
+      ]
+    }
+  ]
+}

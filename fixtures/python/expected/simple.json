@@ -1,0 +1,69 @@
+{
+  "symbols": [
+    {
+      "name": "User",
+      "kind": "class",
+      "line_start": 6,
+      "line_end": 8,
+      "signature": "class User:"
+    },
+    {
+      "name": "__init__",
+      "kind": "function",
+      "line_start": 7,
+      "line_end": 8,
+      "signature": "def __init__(self, name: str):"
+    },
+    {
+      "name": "AuthService",
+      "kind": "class",
+      "line_start": 11,
+      "line_end": 21,
+      "signature": "class AuthService:"
+    },
+    {
+      "name": "__init__",
+      "kind": "function",
+      "line_start": 14,
+      "line_end": 15,
+      "signature": "def __init__(self, tokens: TokenService):"
+    },
+    {
+      "name": "login",
+      "kind": "function",
+      "line_start": 17,
+      "line_end": 18,
+      "signature": "def login(self, user: User) -> str:"
+    },
+    {
+      "name": "logout",
+      "kind": "function",
+      "line_start": 20,
+      "line_end": 21,
+      "signature": "def logout(self, token: str) -> None:"
+    },
+    {
+      "name": "create_auth_service",
+      "kind": "function",
+      "line_start": 24,
+      "line_end": 25,
+      "signature": "def create_auth_service(t: TokenService) -> AuthService:"
+    }
+  ],
+  "imports": [
+    {
+      "specifier": "",
+      "names": [
+        "typing",
+        "List"
+      ]
+    },
+    {
+      "specifier": "",
+      "names": [
+        "token_service",
+        "TokenService"
+      ]
+    }
+  ]
+}
