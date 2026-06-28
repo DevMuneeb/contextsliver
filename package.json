@@ -1,6 +1,6 @@
 {
   "name": "contextsliver",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Universal context-management MCP server for AI coding agents. On-demand dependency-graph pruning with session awareness.",
   "keywords": [
     "mcp",
