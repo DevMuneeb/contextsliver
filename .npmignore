@@ -1,0 +1,18 @@
+# Everything NOT shipped to npm. Only dist/, grammars/, templates/, hooks/ go out
+# (as declared in package.json "files"), but .npmignore keeps dev clutter out too.
+src/
+test/
+fixtures/
+.github/
+.git/
+.gitignore
+.eslintrc.json
+.prettierrc
+.npmignore
+tsconfig.json
+tsconfig.build.json
+vitest.config.ts
+contextsliver-spec.md
+CONTRIBUTING.md
+**/*.test.ts
+**/*.bench.ts
