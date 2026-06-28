@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-06-29
+
+### Fixed
+- **Critical: `EMFILE: too many open files` error on real projects with dependencies.** The file
+  watcher used glob-based ignore patterns, but chokidar v4 dropped glob support for the `ignored`
+  option — so `node_modules` was NOT excluded and the watcher tried to track every dependency
+  file (thousands), exhausting the OS file-descriptor limit. Replaced with a function-based
+  path-segment matcher that correctly excludes `node_modules`, `dist`, `.git`, etc. anywhere in
+  the tree. Verified: 0 node_modules files leak through (was 9,335+).
+
+### Added
+- `test/unit/watcher-ignore.test.ts` — regression guard for the EMFILE bug, documenting the
+  required behavior of the ignore matcher so it can't be silently reverted to globs.
+
+## [0.1.3] - 2026-06-29
+
+### Added
+- `CHANGELOG.md` (Keep a Changelog format).
+- CI now runs on pull requests via branch protection rules.
+
 ## [0.1.2] - 2026-06-28
 
 ### Added
@@ -33,6 +53,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI (lint + typecheck + build + test on Node 20/22, ubuntu + macOS) and automated
   npm publishing on version tags.
 
-[Unreleased]: https://github.com/DevMuneeb/contextsliver/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/DevMuneeb/contextsliver/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/DevMuneeb/contextsliver/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/DevMuneeb/contextsliver/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/DevMuneeb/contextsliver/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/DevMuneeb/contextsliver/releases/tag/v0.1.1
