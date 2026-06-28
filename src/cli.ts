@@ -24,7 +24,25 @@ import { GraphStore } from './graph/store.js';
 import { indexRepository } from './parser/index.js';
 import { log } from './utils/logger.js';
 
-const VERSION = '0.1.0';
+// Read version from package.json so the CLI never reports a stale hardcoded value.
+// Resolves relative to the compiled module (dist/cli.js → ../package.json), with a fallback
+// for development (src/cli.ts → ../package.json).
+function readVersion(): string {
+  const here = fileURLToPath(import.meta.url);
+  const dir = here.slice(0, here.lastIndexOf('/'));
+  const candidates = [join(dir, '..', 'package.json'), join(dir, '..', '..', 'package.json')];
+  for (const candidate of candidates) {
+    try {
+      const pkg = JSON.parse(readFileSync(candidate, 'utf-8'));
+      if (pkg.version) return pkg.version;
+    } catch {
+      // try next
+    }
+  }
+  return '0.0.0-unknown';
+}
+
+const VERSION = readVersion();
 
 const program = new Command();
 

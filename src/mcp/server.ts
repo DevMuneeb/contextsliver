@@ -16,6 +16,7 @@ import { SessionManager } from '../session/manager.js';
 import { ALL_TOOLS } from './tools/index.js';
 import { startWatcher } from '../watcher/index.js';
 import { log, logError } from '../utils/logger.js';
+import { ensureNativeModulesOrExit } from '../utils/native-check.js';
 import type { ToolContext } from './types.js';
 
 export interface ServerOptions {
@@ -36,6 +37,16 @@ export interface ServerOptions {
 export async function startMCPServer(opts: ServerOptions): Promise<void> {
   const projectRoot = opts.projectRoot;
   const watch = opts.watch ?? true;
+
+  // 0. Verify native modules (better-sqlite3, tree-sitter) actually loaded. If their install
+  // scripts were blocked (npm v10+ default), give the user a clear fix rather than crashing
+  // deep inside a DB call.
+  const nativeOk = await ensureNativeModulesOrExit();
+  if (!nativeOk) {
+    // We still start the server so MCP clients don't hang, but every tool call will surface a
+    // helpful error. The user sees the fix instructions on stderr.
+    log('Continuing with degraded mode — tools will report the native-module error.', 'warn');
+  }
 
   // 1. Ensure .sliver/ + open the database.
   const sliverDir = join(projectRoot, '.sliver');
