@@ -26,13 +26,15 @@ same files repeatedly across a session, and has no memory of what it already saw
 
 | Tool | What it does | The gap |
 |------|-------------|---------|
-| **Graphify** | Dumps one giant whole-repo map into context upfront | Wastes tokens on code you don't need for THIS task |
-| **Repomix** | Packs the entire repo into one file | Same — no on-demand pruning |
-| **Aider repo-map** | Sends a whole-repo summary with every message | No session memory; re-sends everything |
+| **Graphify** | Mature, 36-language graph tool with docs/media indexing, PR tooling, work memory | Snapshot model (committed artifact); no **per-session** send dedup; requires Python |
+| **Repomix** | Packs the entire repo into one file | No on-demand pruning; one-shot, not iterative |
+| **Aider repo-map** | PageRank-ranked symbol map sent with every message | Whole-repo map each message; no per-session dedup; Aider-only |
 | **grep / cat** | Manual file reading | No graph awareness; re-reads duplicates |
 
-**None of them:**
-1. Return only the connected subgraph relevant to the current task
+**The narrow gap ContextSliver targets:** a *live* (not snapshot) index updated on every save, and
+**per-conversation deduplication** — tracking exactly what the agent already received this session
+and skipping it. Graphify is more capable overall (more languages, semantic extraction, PR
+tooling); ContextSliver's edge is being lightweight, pure-Node, and session-aware.
 2. Track what the agent has already seen this session
 
 ---
@@ -111,21 +113,30 @@ silently disconnects the agent. We enforce this with:
 
 ---
 
-## 4. How It's Better (vs alternatives)
+## 4. How It Compares (honest)
 
-| | grep / cat | Graphify / Repomix | **ContextSliver** |
-|---|---|---|---|
-| On-demand (only relevant subgraph) | ❌ manual | ❌ whole repo | ✅ yes |
-| Session memory (skip seen symbols) | ❌ | ❌ | ✅ yes |
-| Graph-aware (callers/dependencies) | ❌ | partial | ✅ yes |
-| Cost per query | 2,000–8,000 tok | high upfront | ~300–800 tok |
-| Setup | n/a | config | `npx contextsliver init` |
-| Runs locally | n/a | varies | ✅ SQLite, no server |
+ContextSliver is a focused, early-stage tool — not a feature-for-feature replacement for more
+mature alternatives. Its niche is being **lightweight, live, and session-aware**.
 
-**The three differentiators:**
-1. **On-demand pruning** — never sends the whole graph, only the connected subgraph for the task
-2. **Session ledger** — tracks what the agent has already seen and skips re-sending it
-3. **One-command setup** — `npx contextsliver init`. No database server, no API key
+| | grep / cat | Graphify | Aider repo-map | **ContextSliver** |
+|---|---|---|---|---|
+| Languages | n/a | 36 | many | 2 (TS/JS, Python) |
+| Indexing model | n/a | committed snapshot | per-message map | **live (save → reindex)** |
+| Per-session send dedup | ❌ | ❌ | ❌ | **✅ (unique)** |
+| Requires Python | n/a | ✅ | ✅ | **❌ (pure Node)** |
+| Scope | manual | code+docs+media+infra | code symbols | code symbols |
+| Cost per query | 2,000–8,000 tok | varies | ~1K tok × every msg | ~300–800 tok, **dedup'd** |
+
+**The genuine, defensible differentiators (narrow but real):**
+1. **Always-live index** — save → instant reindex, no "rebuild the graph" step, no stale snapshot
+2. **Per-session deduplication** — the session ledger tracks what was sent *this conversation* and
+   skips it; nobody else does this. Token cost decreases over a session.
+3. **Zero-Python, pure Node** — `npx`, no Python/`uv` dependency. Built for TS/JS shops.
+
+**Where ContextSliver loses honestly:** Graphify is more capable overall (more languages, LLM
+semantic extraction, docs/media indexing, PR tooling, visualizations, YC-backed). ContextSliver
+is v0.1. Don't position it as "better than Graphify" — position it as the lightweight, live,
+session-aware option for Node/TS shops.
 
 ### Spec corrections we made (the spec was wrong in 4 places)
 
